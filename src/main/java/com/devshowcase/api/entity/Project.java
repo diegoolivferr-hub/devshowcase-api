@@ -19,6 +19,12 @@ public class Project {
     private String description;
 
     private String url;
+    
+    @Column
+private Double averageRating = 0.0;
+
+@Column(nullable = false)
+private Integer upvotes = 0;
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
@@ -79,4 +85,20 @@ public class Project {
     public void setTechnologies(List<Technology> technologies) {
         this.technologies = technologies;
     }
+
+    public Double getAverageRating() {
+    return averageRating;
+}
+
+public void setAverageRating(Double averageRating) {
+    this.averageRating = averageRating;
+}
+
+public Integer getUpvotes() {
+    return upvotes;
+}
+
+public void setUpvotes(Integer upvotes) {
+    this.upvotes = upvotes;
+}
 }

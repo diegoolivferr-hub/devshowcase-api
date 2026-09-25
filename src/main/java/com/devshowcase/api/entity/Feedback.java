@@ -10,7 +10,10 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 2000)
+    @Column(nullable = false)
+    private Integer rating;
+
+    @Column(length = 2000, nullable = false)
     private String comment;
 
     @ManyToOne
@@ -22,6 +25,14 @@ public class Feedback {
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public String getComment() {

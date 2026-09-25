@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/feedbacks")
+@RequestMapping("/api/projects/{id}/feedbacks")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
@@ -19,7 +19,10 @@ public class FeedbackController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Feedback create(@Valid @RequestBody FeedbackRequestDTO dto) {
-        return feedbackService.create(dto);
+    public Feedback create(
+            @PathVariable Long id,
+            @Valid @RequestBody FeedbackRequestDTO dto) {
+
+        return feedbackService.create(id, dto);
     }
 }

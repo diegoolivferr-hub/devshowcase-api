@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class ProjectService {
 
@@ -53,13 +57,26 @@ public class ProjectService {
         return convertToDTO(savedProject);
     }
 
-    public List<ProjectResponseDTO> findAll() {
+   public Page<ProjectResponseDTO> findAll(
+        Long technologyId,
+        int page,
+        int size) {
 
-        return projectRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<Project> projects;
+
+    if (technologyId != null) {
+        projects = projectRepository.findByTechnologiesId(
+                technologyId,
+                pageable
+        );
+    } else {
+        projects = projectRepository.findAll(pageable);
     }
+
+    return projects.map(this::convertToDTO);
+}
 
     private ProjectResponseDTO convertToDTO(Project project) {
 
@@ -68,13 +85,27 @@ public class ProjectService {
         .map(technology -> technology.getId())
         .toList();
 
-        return new ProjectResponseDTO(
-                project.getId(),
-                project.getTitle(),
-                project.getDescription(),
-                project.getUrl(),
-                project.getProfile().getId(),
-                technologyIds
-        );
+       return new ProjectResponseDTO(
+        project.getId(),
+        project.getTitle(),
+        project.getDescription(),
+        project.getUrl(),
+        project.getProfile().getId(),
+        technologyIds,
+        project.getAverageRating(),
+        project.getUpvotes()
+);
     }
+
+    public ProjectResponseDTO upvote(Long id) {
+
+    Project project = projectRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+    project.setUpvotes(project.getUpvotes() + 1);
+
+    Project updatedProject = projectRepository.save(project);
+
+    return convertToDTO(updatedProject);
+}
 }

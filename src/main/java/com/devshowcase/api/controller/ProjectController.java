@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -27,8 +27,17 @@ public class ProjectController {
         return projectService.create(dto);
     }
 
-    @GetMapping
-    public List<ProjectResponseDTO> findAll() {
-        return projectService.findAll();
-    }
+   @GetMapping
+public Page<ProjectResponseDTO> findAll(
+        @RequestParam(required = false) Long technologyId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+
+    return projectService.findAll(technologyId, page, size);
+}
+
+    @PutMapping("/{id}/upvote")
+public ProjectResponseDTO upvote(@PathVariable Long id) {
+    return projectService.upvote(id);
+}
 }
